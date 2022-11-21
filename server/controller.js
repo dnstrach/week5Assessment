@@ -225,8 +225,8 @@ module.exports = {
             ('Vietnam'),
             ('Yemen'),
             ('Zambia'),
-            ('Zimbabwe');
-        `).then(() => {
+            ('Zimbabwe');`)
+            .then(() => {
             console.log('DB seeded!')
             res.sendStatus(200)
         }).catch(err => console.log('error seeding DB', err))
@@ -240,22 +240,23 @@ module.exports = {
     },
 
     createCity: (req, res) => {
-        let {countryId, name, rating} = req.body
+        const {name, rating, countryId} = req.body;
 
         sequelize.query(`
-        INSERT INTO cities (country_id, name, rating)
-        VALUES (${countryId}, '${name})', '${rating}')`)
+        INSERT INTO cities (name, rating, country_id)
+        VALUES ('${name}', ${rating}, ${countryId})`)
         .then(dbRes =>res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))    
     },
 
     getCities: (req, res) => {
         sequelize.query(`
-        SELECT ci.city_id, ci.name, ci.rating AS city, 
+        SELECT ci.city_id, ci.name AS city, ci.rating, 
         co.country_id, co.name AS country 
         FROM cities AS ci 
         JOIN countries AS co 
-        ON ci.country_id = co.country_id`)
+        ON ci.country_id = co.country_id;`)
+        
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))
     },
